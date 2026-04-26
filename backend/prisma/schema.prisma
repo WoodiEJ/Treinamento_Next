@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Carros {
+  id            Int @id @default(autoincrement())
+  nome          String
+  modelo        String
+  ano           Int
+  cor           String
+  preco         Decimal @db.Decimal(10, 2)
+  vendas        Vendas[]
+}
+
+model Clientes {
+  id                    Int @id @default(autoincrement())
+  nome                  String
+  sobrenome             String
+  dataDeNascimento      DateTime
+  telefone              String 
+  email                 String @unique
+  cpf                   String @unique @db.VarChar(11)
+  vendas                Vendas[]
+}
+
+model Vendedores {
+  id                    Int @id @default(autoincrement())
+  nome                  String
+  sobrenome             String
+  cpf                   String @unique @db.VarChar(11)
+  telefone              String
+  email                 String @unique
+  comissao              Decimal? @db.Decimal(10, 2)
+  vendas                Vendas[]
+}
+
+model Vendas {
+  id                    Int @id @default(autoincrement())
+  carroId               Int
+  vendedorId            Int
+  clienteId             Int
+  valorTotal            Decimal @db.Decimal(10, 2)
+  carro                 Carros @relation(fields: [carroId], references: [id])
+  vendedor              Vendedores @relation(fields: [vendedorId], references: [id])
+  cliente               Clientes @relation(fields: [clienteId], references: [id])
+}
+
+model Usuario {
+  id                    Int @id @default(autoincrement())
+  nome                  String
+  sobrenome             String
+  dataDeNascimento      DateTime
+  email                 String @unique
+  senha                 String
+}
